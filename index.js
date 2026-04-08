@@ -3,7 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { Gitlab } from "@gitbeaker/rest";
 import { exec } from "child_process";
 import { promisify } from "util";
-import { z } from "zod";
+import * as z from "zod/v4";
 import _ from "lodash";
 
 
@@ -34,8 +34,11 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
+const registerTool = (name, description, inputSchema, handler) =>
+  server.registerTool(name, { description, inputSchema }, handler);
+
 // --- Merge Request Tools ---
-server.tool(
+registerTool(
   "get_projects",
   "Get a list of projects with id, name, description, web_url and other useful information.",
   z.object({
@@ -70,7 +73,7 @@ server.tool(
   }
 );
 
-server.tool(
+registerTool(
   "list_open_merge_requests",
   "Lists all open merge requests in the project",
   z.object({
@@ -98,7 +101,7 @@ server.tool(
   }
 );
 
-server.tool(
+registerTool(
   "get_merge_request_details",
   "Get details about a specific merge request of a project like title, source-branch, target-branch, web_url, ...",
   z.object({
@@ -129,7 +132,7 @@ server.tool(
   }
 );
 
-server.tool(
+registerTool(
   "get_merge_request_comments",
   "Get general and file diff comments of a certain merge request",
   z.object({
@@ -173,7 +176,7 @@ server.tool(
   }
 );
 
-server.tool(
+registerTool(
   "add_merge_request_comment",
   "Add a general comment to a merge request",
   z.object({
@@ -193,7 +196,7 @@ server.tool(
   }
 );
 
-server.tool(
+registerTool(
   "add_merge_request_diff_comment",
   "Add a comment of a merge request at a specific line in a file diff",
   z.object({
@@ -233,7 +236,7 @@ server.tool(
   }
 );
 
-server.tool(
+registerTool(
   "get_merge_request_diff",
   "Get the file diffs of a certain merge request",
   z.object({
@@ -255,7 +258,7 @@ server.tool(
   }
 );
 
-server.tool(
+registerTool(
   "get_issue_details",
   "Get details of an issue within a certain project",
   z.object({
@@ -281,7 +284,7 @@ server.tool(
   }
 );
 
-server.tool(
+registerTool(
   "set_merge_request_description",
   "Set the description of a merge request",
   z.object({
@@ -301,7 +304,7 @@ server.tool(
   }
 );
 
-server.tool(
+registerTool(
   "set_merge_request_title",
   "Set the title of a merge request",
   z.object({
